@@ -389,7 +389,8 @@ public class Message extends AbstractEntity {
 						!message.getBody().startsWith(ME_COMMAND) &&
 						!this.getBody().startsWith(ME_COMMAND) &&
 						!this.bodyIsHeart() &&
-						!message.bodyIsHeart()
+						!message.bodyIsHeart() &&
+						this.isTrusted() == message.isTrusted()
 				);
 	}
 
@@ -668,5 +669,10 @@ public class Message extends AbstractEntity {
 
 	public String getAxolotlFingerprint() {
 		return axolotlFingerprint;
+	}
+
+	public boolean isTrusted() {
+		return conversation.getAccount().getAxolotlService().getFingerprintTrust(axolotlFingerprint)
+				== AxolotlService.SQLiteAxolotlStore.Trust.TRUSTED;
 	}
 }
