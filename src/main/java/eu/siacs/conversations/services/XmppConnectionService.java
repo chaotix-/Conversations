@@ -758,6 +758,7 @@ public class XmppConnectionService extends Service implements OnPhoneContactsLoa
 					packet = account.getAxolotlService().fetchPacketFromCache(message);
 					if (packet == null && account.isOnlineAndConnected()) {
 						account.getAxolotlService().prepareMessage(message);
+						message.setAxolotlFingerprint(account.getAxolotlService().getOwnPublicKey().getFingerprint().replaceAll("\\s", ""));
 					}
 					break;
 
@@ -787,6 +788,9 @@ public class XmppConnectionService extends Service implements OnPhoneContactsLoa
 					if (!conversation.hasValidOtrSession() && message.getCounterpart() != null) {
 						conversation.startOtrSession(message.getCounterpart().getResourcepart(), false);
 					}
+					break;
+				case Message.ENCRYPTION_AXOLOTL:
+					message.setAxolotlFingerprint(account.getAxolotlService().getOwnPublicKey().getFingerprint().replaceAll("\\s", ""));
 					break;
 			}
 		}
