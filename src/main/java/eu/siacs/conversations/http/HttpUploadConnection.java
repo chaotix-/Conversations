@@ -172,7 +172,7 @@ public class HttpUploadConnection implements Transferable {
 						mXmppConnectionService.getPgpEngine().encrypt(message, new UiCallback<Message>() {
 							@Override
 							public void success(Message message) {
-								mXmppConnectionService.resendMessage(message);
+								mXmppConnectionService.resendMessage(message,false);
 							}
 
 							@Override
@@ -186,7 +186,7 @@ public class HttpUploadConnection implements Transferable {
 							}
 						});
 					} else {
-						mXmppConnectionService.resendMessage(message);
+						mXmppConnectionService.resendMessage(message,false);
 					}
 				} else {
 					fail();
