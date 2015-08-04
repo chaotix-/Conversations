@@ -30,6 +30,7 @@ import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.Xmlns;
 import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xmpp.OnIqPacketReceived;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
 import eu.siacs.conversations.xmpp.jid.Jid;
 import eu.siacs.conversations.xmpp.stanzas.IqPacket;
 
@@ -90,6 +91,18 @@ public class HttpUploadConnection implements Transferable {
 		FileBackend.close(mFileInputStream);
 	}
 
+	public Jid getHttpUploadHost() {
+		String hoststr = mXmppConnectionService.getPreferences().getString("http_upload_service", "");
+		if(hoststr.length() > 0) {
+			try {
+				return Jid.fromString(hoststr);
+			} catch (InvalidJidException ignored) {
+				// Ignore preferences host and go on with disco request
+			}
+		}
+		return account.getXmppConnection().findDiscoItemByFeature(Xmlns.HTTP_UPLOAD);
+	}
+
 	public void init(Message message, boolean delay) {
 		this.message = message;
 		message.setTransferable(this);
@@ -114,7 +127,8 @@ public class HttpUploadConnection implements Transferable {
 		}
 		this.file.setExpectedSize(pair.second);
 		this.mFileInputStream = pair.first;
-		Jid host = account.getXmppConnection().findDiscoItemByFeature(Xmlns.HTTP_UPLOAD);
+		Jid host = this.getHttpUploadHost();
+		Log.d(Config.LOGTAG,account.getJid().toBareJid()+": upload host: "+host);
 		IqPacket request = mXmppConnectionService.getIqGenerator().requestHttpUploadSlot(host,file,mime);
 		mXmppConnectionService.sendIqPacket(account, request, new OnIqPacketReceived() {
 			@Override

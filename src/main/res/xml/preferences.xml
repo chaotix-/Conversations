@@ -170,6 +170,11 @@
                     android:key="keep_foreground_service"
                     android:summary="@string/pref_keep_foreground_service_summary"
                     android:title="@string/pref_keep_foreground_service"/>
+                <EditTextPreference
+                    android:defaultValue=""
+                    android:key="http_upload_service"
+                    android:summary="@string/pref_http_upload_service_summary"
+                    android:title="@string/pref_http_upload_service"/>
             </PreferenceCategory>
         </PreferenceScreen>
 

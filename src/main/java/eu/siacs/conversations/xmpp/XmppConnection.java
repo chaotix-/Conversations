@@ -1231,6 +1231,17 @@ public class XmppConnection implements Runnable {
 		}
 
 		public boolean httpUpload() {
+			String hoststr = mXmppConnectionService.getPreferences().getString("http_upload_service", "");
+			if(hoststr.length() > 0) {
+				try {
+					Jid.fromString(hoststr);
+					return true;
+				} catch (InvalidJidException ignored) {
+					// Ignore preference and use disco
+					Log.e(Config.LOGTAG, "Invalid http_upload_service JID "
+							+hoststr + ": " + ignored + ".");
+				}
+			}
 			return findDiscoItemsByFeature(Xmlns.HTTP_UPLOAD).size() > 0;
 		}
 	}
